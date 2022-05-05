@@ -1,0 +1,30 @@
+org: kcabezas
+app: aws-node1
+service: aws-node1
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  apiGateway:
+    apiKeys:
+      - apikeilorkey
+
+functions:
+  hello:
+    handler: handler.hello
+    environment: 
+     HELLO_URL: 'https://api.darksky.net/forecast'
+     HELLO_APIKEY: ${ssm:/hello-api-key}
+  main:
+    handler: handler.main
+  candidateSubmission:
+    handler: api/candidate.submit
+    memorySize: 128
+    description: Submit candidate information and starts interview process.
+    events:
+      - http: 
+          path: candidates
+          method: post
+          private: true
