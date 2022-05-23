@@ -1,4 +1,7 @@
-'use strict';
+import { query } from "Utils/db/connection.js";
+/*'use strict';
+const aws = require('aws-sdk');
+const s3 = new aws.S3(); // Pass in opts to S3 if necessary
 
 const pg = require('pg')
 const PGHOST = process.env.PGHOST;
@@ -37,32 +40,39 @@ async function query(q) {
     client.release()
   }
   return res
-}
+}*/
 
-module.exports.hola = async (event, context, callback) => {
+module.exports.create = async (event, context, callback) => {
  
   console.log('event' + JSON.stringify(event))
   console.log('context' + JSON.stringify(context))
   try {
 
-    //const { rows } = await query("SELECT public.insertorders("+event.storerkey+","+event.externorderkey+","+event.c_company+","+event.ORDERDATE+","+event.c_address1+","+'1'+","+event.sku+","+event.originalqty+")")
-   // var response = {
-   //   "statusCode": 200,
-   //   "headers": {
+    const { rows } = await query("SELECT public.insertorders("+event.storerkey+","+event.externorderkey+","+event.c_company+","+event.ORDERDATE+","+event.c_address1+","+'1'+","+event.sku+","+event.originalqty+")")
+    var response = {
+      "statusCode": 200,
+      "headers": {
 
-   //     "Content-Type": "application/json"
+        "Content-Type": "application/json"
 
-    //  },
-    //  "body": JSON.stringify(rows),
-    //"isBase64Encoded": false
+      },
+      "body": JSON.stringify(rows),
+    "isBase64Encoded": false
 
-    //};
+    };
 
-    callback(null, null);
+    callback(null, response);
   } catch (err) {
 
-    //handling errors
+    //for test
     console.log('Database ' + err)
-    callback(null, 'Database ' + err);
+   //handling errors
+    console.error('Database ' + err);
+    //for more information, details
+    console.info('Database ' + err)
+
+    callback(null, 'Database ' + 'database error!!');
   }
+
+ 
 };
